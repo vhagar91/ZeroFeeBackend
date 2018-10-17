@@ -23,10 +23,12 @@ from rest_framework_simplejwt.views import (
 from src.users.serializers import CustomJWTSerializer
 from src.users.views import ObtainJSONWebToken
 from rest_framework.documentation import include_docs_urls
-
+from .settings import MEDIA_ROOT,MEDIA_URL,DEBUG
+from django.conf import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    # path('admin/', admin.site.urls),
     # Generate schema with valid `request` instance:
     url(r'^docs/', include_docs_urls(title='Zero Fee API', public=False)),
     url(r'^api/login/$', ObtainJSONWebToken.as_view(serializer_class=CustomJWTSerializer)),
@@ -35,4 +37,8 @@ urlpatterns = [
     url(r'^api/token/verify/$', TokenVerifyView.as_view(), name='token_verify'),
     url(r'^api/', include('src.urls')),
 
+
+
 ]
+if settings.DEBUG is True:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

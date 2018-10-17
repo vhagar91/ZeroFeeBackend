@@ -1,10 +1,12 @@
 from django.contrib.auth.models import User, Group
-from rest_framework import serializers
+from .models import *
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from django.contrib.auth import authenticate
 from rest_framework import serializers
 from django.utils.translation import ugettext_lazy as _
 from django.utils.six import text_type
+from django.dispatch import receiver
+import os
 
 
 class CustomJWTSerializer(TokenObtainPairSerializer):
@@ -60,7 +62,47 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class GroupSerializer(serializers.HyperlinkedModelSerializer):
+
     class Meta:
         model = Group
         fields = ('url', 'name')
 
+
+class EmailSerializer(serializers.HyperlinkedModelSerializer):
+
+    class Meta:
+        model = Email
+        fields = ('email',)
+
+
+class ProfileSerializer(serializers.HyperlinkedModelSerializer):
+    photo_url = serializers.SerializerMethodField()
+    picture = serializers.SlugRelatedField(slug_field='id', queryset=Picture.objects.all())
+    email_set = EmailSerializer(read_only=True,many=True)
+
+    class Meta:
+        model = UserProfile
+        fields = ('user_id', 'gender', 'email_set', 'photo_url', 'picture')
+        depth = 1
+
+    extra_kwargs = {
+       'user': {'lookup_field': 'pk'}
+    }
+
+    def get_photo_url(self, profile):
+        request = self.context.get('request')
+        if profile.picture:
+           photo_url = profile.picture.thumbnail.url
+           return request.build_absolute_uri(photo_url)
+        else:
+            return ''
+
+    @receiver(models.signals.pre_delete, sender=UserProfile)
+    def auto_delete_avatar_on_delete(sender, instance, **kwargs):
+        """Deletes file from filesystem
+        when corresponding `File` object is deleted.
+     """
+        if instance._state.adding is False:
+            if instance.picture:
+                if os.path.isfile(instance.picture.path):
+                    os.remove(instance.picture.path)

@@ -2,16 +2,17 @@ from django.contrib.auth.models import User, Group
 from rest_framework import viewsets
 from .serializers import UserSerializer, GroupSerializer
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
-from .serializers import CustomJWTSerializer
+from .serializers import CustomJWTSerializer, ProfileSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
-from rest_framework.generics import ListAPIView
+from rest_framework.generics import ListAPIView,RetrieveUpdateAPIView
 from rest_framework.pagination import PageNumberPagination
+from .models import UserProfile
 
 class UserViewList(ListAPIView):
     """
     API endpoint that allows users to be viewed or edited.
     """
-    # permission_classes = (IsAuthenticated,IsAdminUser)
+    permission_classes = (IsAuthenticated,IsAdminUser)
     queryset = User.objects.all().order_by('-date_joined')
     serializer_class = UserSerializer
     pagination_class = PageNumberPagination
@@ -31,3 +32,12 @@ class ObtainJSONWebToken(TokenObtainPairView):
     """
 
     serializer_class = CustomJWTSerializer
+
+
+class ProfileViewGet(RetrieveUpdateAPIView):
+    """
+       API endpoint that allows obtain a User Profile.
+       """
+    serializer_class = ProfileSerializer
+    lookup_field = 'user'
+    queryset = UserProfile.objects.all()

@@ -4,9 +4,9 @@ import os
 
 def asset_upload(instance, filename):
 
-    username = instance.username
 
-    output = 'user%s/%s' % (username, filename)
+
+    output = 'users/%s' % filename
 
 
     return output
