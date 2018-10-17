@@ -4,15 +4,17 @@ from .serializers import UserSerializer, GroupSerializer
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from .serializers import CustomJWTSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
+from rest_framework.generics import ListAPIView
+from rest_framework.pagination import PageNumberPagination
 
-
-class UserViewSet(viewsets.ModelViewSet):
+class UserViewList(ListAPIView):
     """
     API endpoint that allows users to be viewed or edited.
     """
-    permission_classes = (IsAuthenticated,IsAdminUser)
+    # permission_classes = (IsAuthenticated,IsAdminUser)
     queryset = User.objects.all().order_by('-date_joined')
     serializer_class = UserSerializer
+    pagination_class = PageNumberPagination
 
 
 class GroupViewSet(viewsets.ModelViewSet):
@@ -21,6 +23,7 @@ class GroupViewSet(viewsets.ModelViewSet):
     """
     queryset = Group.objects.all()
     serializer_class = GroupSerializer
+
 
 class ObtainJSONWebToken(TokenObtainPairView):
     """
