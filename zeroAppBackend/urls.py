@@ -28,7 +28,7 @@ from rest_framework.documentation import include_docs_urls
 urlpatterns = [
     path('admin/', admin.site.urls),
     # Generate schema with valid `request` instance:
-    url(r'^docs/', include_docs_urls(title='My API title', public=False)),
+    url(r'^docs/', include_docs_urls(title='Zero Fee API', public=False)),
     url(r'^api/login/$', ObtainJSONWebToken.as_view(serializer_class=CustomJWTSerializer)),
     # url(r'^api/token/$', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     url(r'^api/token/refresh/$', TokenRefreshView.as_view(), name='token_refresh'),
