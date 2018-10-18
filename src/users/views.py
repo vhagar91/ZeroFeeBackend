@@ -6,6 +6,8 @@ from .serializers import CustomJWTSerializer, ProfileSerializer, AvatarSerialize
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework.generics import ListAPIView,RetrieveUpdateAPIView,RetrieveAPIView
 from rest_framework.pagination import PageNumberPagination
+from zeroAppBackend.permisions import OnlyAPIPermission
+from rest_framework_api_key.permissions import HasAPIAccess
 from .models import UserProfile
 
 
@@ -13,7 +15,7 @@ class UserViewList(ListAPIView):
     """
     API endpoint that allows users to be viewed or edited.
     """
-    permission_classes = (IsAuthenticated,IsAdminUser)
+    permission_classes = (IsAuthenticated,IsAdminUser,OnlyAPIPermission)
     queryset = User.objects.all().order_by('-date_joined')
     serializer_class = UserSerializer
     pagination_class = PageNumberPagination
@@ -46,7 +48,7 @@ class ProfileViewGet(RetrieveUpdateAPIView):
 
 class AvatarViewGet(RetrieveAPIView):
     """
-       API endpoint that allows obtain a User Profile.
+       API endpoint that allows obtain a User Avatar.
        """
     serializer_class = AvatarSerializer
     lookup_field = 'user'

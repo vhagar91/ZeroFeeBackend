@@ -23,7 +23,6 @@ from rest_framework_simplejwt.views import (
 from src.users.serializers import CustomJWTSerializer
 from src.users.views import ObtainJSONWebToken
 from rest_framework.documentation import include_docs_urls
-from .settings import MEDIA_ROOT,MEDIA_URL,DEBUG
 from django.conf import settings
 from django.conf.urls.static import static
 
