@@ -28,7 +28,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 urlpatterns = [
-    # path('admin/', admin.site.urls),
+    path('admin/', admin.site.urls),
     # Generate schema with valid `request` instance:
     url(r'^docs/', include_docs_urls(title='Zero Fee API', public=False)),
     url(r'^api/login/$', ObtainJSONWebToken.as_view(serializer_class=CustomJWTSerializer)),

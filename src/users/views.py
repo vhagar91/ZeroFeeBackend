@@ -2,11 +2,12 @@ from django.contrib.auth.models import User, Group
 from rest_framework import viewsets
 from .serializers import UserSerializer, GroupSerializer
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
-from .serializers import CustomJWTSerializer, ProfileSerializer
+from .serializers import CustomJWTSerializer, ProfileSerializer, AvatarSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
-from rest_framework.generics import ListAPIView,RetrieveUpdateAPIView
+from rest_framework.generics import ListAPIView,RetrieveUpdateAPIView,RetrieveAPIView
 from rest_framework.pagination import PageNumberPagination
 from .models import UserProfile
+
 
 class UserViewList(ListAPIView):
     """
@@ -39,5 +40,14 @@ class ProfileViewGet(RetrieveUpdateAPIView):
        API endpoint that allows obtain a User Profile.
        """
     serializer_class = ProfileSerializer
+    lookup_field = 'user'
+    queryset = UserProfile.objects.all()
+
+
+class AvatarViewGet(RetrieveAPIView):
+    """
+       API endpoint that allows obtain a User Profile.
+       """
+    serializer_class = AvatarSerializer
     lookup_field = 'user'
     queryset = UserProfile.objects.all()

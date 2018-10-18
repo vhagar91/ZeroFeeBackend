@@ -55,17 +55,19 @@ class CustomJWTSerializer(TokenObtainPairSerializer):
             raise serializers.ValidationError(msg)
 
 
-class UserSerializer(serializers.HyperlinkedModelSerializer):
-    class Meta:
-        model = User
-        fields = ('username', 'email', 'groups', 'first_name', 'last_name' ,'is_staff')
-
-
 class GroupSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = Group
-        fields = ('url', 'name')
+        fields = ('name',)
+
+
+class UserSerializer(serializers.HyperlinkedModelSerializer):
+    groups = GroupSerializer(many=True)
+
+    class Meta:
+        model = User
+        fields = ('username', 'email', 'groups', 'first_name', 'last_name', 'is_staff')
 
 
 class EmailSerializer(serializers.HyperlinkedModelSerializer):
@@ -106,3 +108,23 @@ class ProfileSerializer(serializers.HyperlinkedModelSerializer):
             if instance.picture:
                 if os.path.isfile(instance.picture.path):
                     os.remove(instance.picture.path)
+
+
+class AvatarSerializer(serializers.HyperlinkedModelSerializer):
+    photo_url = serializers.SerializerMethodField()
+
+    class Meta:
+        model = UserProfile
+        fields = ('photo_url',)
+
+    extra_kwargs = {
+        'user': {'lookup_field': 'pk'}
+    }
+
+    def get_photo_url(self, profile):
+        request = self.context.get('request')
+        if profile.picture:
+            photo_url = profile.picture.thumbnail.url
+            return request.build_absolute_uri(photo_url)
+        else:
+            return ''
