@@ -32,12 +32,14 @@ class CustomJWTSerializer(TokenObtainPairSerializer):
                     token = {}
                     userData = {}
                     refresh = self.get_token(user)
+                    profile = UserProfile.objects.get(user=user_obj);
 
                     token['refresh'] = text_type(refresh)
                     token['access'] = text_type(refresh.access_token)
                     userData['name'] = user_obj.username
                     userData['email'] = user_obj.email
                     userData['id'] = user_obj.id
+                    userData['avatar'] = self.get_photo_url(profile);
                     data['token']=token
                     data['user']=userData
                     return data
@@ -54,6 +56,13 @@ class CustomJWTSerializer(TokenObtainPairSerializer):
             msg = _('Account with this email/username does not exists')
             raise serializers.ValidationError(msg)
 
+    def get_photo_url(self, profile):
+        request = self.context.get('request')
+        if profile.picture:
+            photo_url = profile.picture.thumbnail.url
+            return request.build_absolute_uri(photo_url)
+        else:
+            return ''
 
 class GroupSerializer(serializers.HyperlinkedModelSerializer):
 
