@@ -1,8 +1,8 @@
 from django.conf.urls import url, include
 from rest_framework import routers
 from src.users import views
-from .serializers import UserSerializer,ProfileSerializer, AvatarSerializer
-from .views import UserViewList, ProfileViewGet, AvatarViewGet
+from .serializers import UserSerializer,ProfileSerializer, PictureSerializer
+from .views import UserViewList, ProfileViewGet, PictureUpdateView
 router = routers.DefaultRouter()
 # router.register(r'list', views.UserViewList)
 router.register(r'groups', views.GroupViewSet)
@@ -11,8 +11,8 @@ router.register(r'groups', views.GroupViewSet)
 # Additionally, we include login URLs for the browsable API.
 urlpatterns = [
     # url(r'^', include(router.urls)),
-    url(r'^list/$', UserViewList.as_view(serializer_class=UserSerializer)),
+   url(r'^list/$', UserViewList.as_view(serializer_class=UserSerializer)),
    url(r'^profile/(?P<user>\d+)/$', ProfileViewGet.as_view(serializer_class=ProfileSerializer)),
-   url(r'^avatar/(?P<user>\d+)/$', AvatarViewGet.as_view(serializer_class=AvatarSerializer)),
+   url(r'^avatar/(?P<pk>\d+)/$', PictureUpdateView.as_view(serializer_class=PictureSerializer)),
 
 ]

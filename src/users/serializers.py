@@ -64,6 +64,9 @@ class CustomJWTSerializer(TokenObtainPairSerializer):
         else:
             return ''
 
+
+
+
 class GroupSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
@@ -74,26 +77,23 @@ class GroupSerializer(serializers.HyperlinkedModelSerializer):
 class UserSerializer(serializers.HyperlinkedModelSerializer):
     groups = GroupSerializer(many=True)
 
+
     class Meta:
         model = User
         fields = ('username', 'email', 'groups', 'first_name', 'last_name', 'is_staff')
 
 
-class EmailSerializer(serializers.HyperlinkedModelSerializer):
-
-    class Meta:
-        model = Email
-        fields = ('email',)
-
-
 class ProfileSerializer(serializers.HyperlinkedModelSerializer):
+    user_name = serializers.ReadOnlyField (source='user.username')
+    user_email = serializers.ReadOnlyField (source='user.email')
+    user_first_name = serializers.ReadOnlyField (source='user.first_name')
+    user_last_name = serializers.ReadOnlyField (source='user.last_name')
+    picture = serializers.ReadOnlyField(source='picture.id')
     photo_url = serializers.SerializerMethodField()
-    picture = serializers.SlugRelatedField(slug_field='id', queryset=Picture.objects.all())
-    email_set = EmailSerializer(read_only=True,many=True)
 
     class Meta:
         model = UserProfile
-        fields = ('user_id', 'gender', 'email_set', 'photo_url', 'picture')
+        fields = ('user_name','user_email','user_first_name','user_last_name', 'gender','picture','photo_url', 'address', 'city', 'country' ,'about_me')
         depth = 1
 
     extra_kwargs = {
@@ -119,21 +119,12 @@ class ProfileSerializer(serializers.HyperlinkedModelSerializer):
                     os.remove(instance.picture.path)
 
 
-class AvatarSerializer(serializers.HyperlinkedModelSerializer):
-    photo_url = serializers.SerializerMethodField()
+class PictureSerializer(serializers.HyperlinkedModelSerializer):
+
 
     class Meta:
-        model = UserProfile
-        fields = ('photo_url',)
+        model = Picture
+        fields = ('id' , 'thumbnail', 'normal')
 
-    extra_kwargs = {
-        'user': {'lookup_field': 'pk'}
-    }
 
-    def get_photo_url(self, profile):
-        request = self.context.get('request')
-        if profile.picture:
-            photo_url = profile.picture.thumbnail.url
-            return request.build_absolute_uri(photo_url)
-        else:
-            return ''
+

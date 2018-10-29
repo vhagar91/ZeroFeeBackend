@@ -23,16 +23,18 @@ class UserProfile(models.Model):
         (GENDER_MALE, _('male')),
         (GENDER_FEMALE, _('female')),
     )
-    user = models.OneToOneField(User,unique=True,null=True, on_delete=models.CASCADE)
+    user = models.OneToOneField(User,unique=True, null=True, on_delete=models.CASCADE)
     gender = models.CharField(_('gender'),null=True, max_length=1, choices=GENDER_CHOICES, default=GENDER_UNKNOWN,help_text=_(
             'The gender of the user Female or Male.'
         ))
 
-    picture = models.OneToOneField(Picture, verbose_name=_('picture'),
-                                   help_text=_(
+    picture = models.OneToOneField(Picture,unique=True, null=True, on_delete=models.CASCADE, help_text=_(
                                        'User Avatar and Picture'
-                                   ),
-                                   unique=True, on_delete=models.CASCADE, blank=True, null=True)
+                                   ))
+    address = models.CharField(null=True, max_length=50, default='', help_text= 'Users Current Address')
+    city = models.CharField(null=True, max_length=20, default='', help_text='Users Current City')
+    country = models.CharField(null=True, max_length=20, default='', help_text='Users Current Country')
+    about_me = models.CharField(null=True, max_length=30, default='', help_text='Users Extra Info')
 
     @receiver(post_save, sender=User)
     def create_user_profile(sender, instance, created, **kwargs):
