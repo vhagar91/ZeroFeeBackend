@@ -6,6 +6,8 @@ from rest_framework import serializers
 from django.utils.translation import ugettext_lazy as _
 from django.utils.six import text_type
 from django.dispatch import receiver
+from rest_framework.serializers import raise_errors_on_nested_writes
+from rest_framework.utils import  model_meta
 import os
 
 
@@ -82,31 +84,12 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
         model = User
         fields = ('username', 'email', 'groups', 'first_name', 'last_name', 'is_staff')
 
+class PictureSerializer(serializers.ModelSerializer):
 
-class ProfileSerializer(serializers.HyperlinkedModelSerializer):
-    user_name = serializers.ReadOnlyField (source='user.username')
-    user_email = serializers.ReadOnlyField (source='user.email')
-    user_first_name = serializers.ReadOnlyField (source='user.first_name')
-    user_last_name = serializers.ReadOnlyField (source='user.last_name')
-    picture = serializers.ReadOnlyField(source='picture.id')
-    photo_url = serializers.SerializerMethodField()
 
     class Meta:
-        model = UserProfile
-        fields = ('user_name','user_email','user_first_name','user_last_name', 'gender','picture','photo_url', 'address', 'city', 'country' ,'about_me')
-        depth = 1
-
-    extra_kwargs = {
-       'user': {'lookup_field': 'pk'}
-    }
-
-    def get_photo_url(self, profile):
-        request = self.context.get('request')
-        if profile.picture:
-           photo_url = profile.picture.thumbnail.url
-           return request.build_absolute_uri(photo_url)
-        else:
-            return ''
+        model = Picture
+        fields = ('id' , 'thumbnail', 'normal')
 
     @receiver(models.signals.pre_delete, sender=UserProfile)
     def auto_delete_avatar_on_delete(sender, instance, **kwargs):
@@ -114,17 +97,55 @@ class ProfileSerializer(serializers.HyperlinkedModelSerializer):
         when corresponding `File` object is deleted.
      """
         if instance._state.adding is False:
-            if instance.picture:
-                if os.path.isfile(instance.picture.path):
-                    os.remove(instance.picture.path)
+            if instance:
+                if os.path.isfile(instance.picture):
+                    os.remove(instance.picture.thumbnail.path)
+                    os.remove(instance.picture.normal.path)
 
 
-class PictureSerializer(serializers.HyperlinkedModelSerializer):
+class ProfileSerializer(UserSerializer):
+    gender = serializers.CharField(source="userprofile.gender")
+    address = serializers.CharField(source="userprofile.address")
+    city = serializers.CharField(source="userprofile.city")
+    country = serializers.CharField(source="userprofile.country")
+    about_me = serializers.CharField(source="userprofile.about_me")
+    picture = PictureSerializer(source= 'userprofile.picture')
+
+    class Meta(UserSerializer.Meta):
+        fields = ('username','email','first_name','last_name', 'gender','picture', 'address', 'city', 'country' ,'about_me')
+        depth = 1
+
+    def update(self, instance, validated_data):
+        raise_errors_on_nested_writes('update', self, validated_data)
+        info = model_meta.get_field_info(instance)
+        profile = instance.userprofile
+        picture = instance.userprofile.picture
+        p_info = model_meta.get_field_info(profile)
+        pic_info = model_meta.get_field_info(picture)
+
+        for attr, value in validated_data.items():
 
 
-    class Meta:
-        model = Picture
-        fields = ('id' , 'thumbnail', 'normal')
+            if attr == 'userprofile':
+                for attr2, value2 in value.items():
+                    if attr2 == 'picture':
+                        for attr3, value3 in value2.items():
+                            setattr(picture, attr3, value3)
+                    else :
+                        setattr(profile, attr2, value2)
+
+            elif attr in info.relations and info.relations[attr].to_many:
+                field = getattr(instance, attr)
+                field.set(value)
+            else:
+                setattr(instance, attr, value)
+        instance.save()
+        picture.save()
+        profile.save()
+
+        return instance
+
+
 
 
 
