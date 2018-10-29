@@ -34,9 +34,10 @@
 npm-debug.log
 yarn-error.log
 testem.log
-db.sqlite3
+
 /typings
 
 # System Files
 .DS_Store
 Thumbs.db
+db.sqlite3
