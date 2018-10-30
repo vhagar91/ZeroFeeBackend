@@ -7,7 +7,7 @@ from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework.generics import ListAPIView,RetrieveUpdateAPIView,RetrieveAPIView,UpdateAPIView
 from rest_framework.pagination import PageNumberPagination
 from zeroAppBackend.permisions import OnlyAPIPermission
-from .models import UserProfile
+from .models import UserProfile , Picture
 from rest_framework.response import Response
 
 class UserViewList(ListAPIView):
@@ -44,6 +44,15 @@ class ProfileViewGet(RetrieveUpdateAPIView):
     serializer_class = ProfileSerializer
     lookup_field = 'pk'
     queryset = User.objects.all()
+
+
+class ProfilePictureUpdate(UpdateAPIView):
+    """
+       API endpoint that update Users Profile Picture
+       """
+    serializer_class = PictureSerializer
+    lookup_field = 'pk'
+    queryset = Picture.objects.all()
 
 
 
