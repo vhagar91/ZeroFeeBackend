@@ -77,12 +77,28 @@ class GroupSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
-    groups = GroupSerializer(many=True)
-
+    groups = GroupSerializer(many=True, read_only=True)
+    password = serializers.CharField(write_only=True)
+    group = serializers.CharField(write_only=True)
 
     class Meta:
         model = User
-        fields = ('username', 'email', 'groups', 'first_name', 'last_name', 'is_staff')
+        fields = ('username', 'email', 'groups', 'first_name', 'last_name', 'is_staff', 'password', 'group')
+
+    def create(self, validated_data):
+        user = User.objects.create(
+            username=validated_data['username'],
+            email= validated_data['email'],
+            last_name= validated_data['last_name'],
+            first_name= validated_data['first_name'],
+            is_staff= validated_data['is_staff']
+
+                                   )
+        users_group = Group.objects.get(name=validated_data['group'])
+        user.set_password(validated_data['password'])
+        user.save()
+        users_group.user_set.add(user)
+        return user
 
 class PictureSerializer(serializers.ModelSerializer):
 

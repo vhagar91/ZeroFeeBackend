@@ -4,11 +4,12 @@ from .serializers import UserSerializer, GroupSerializer
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from .serializers import CustomJWTSerializer, ProfileSerializer, PictureSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
-from rest_framework.generics import ListAPIView,RetrieveUpdateAPIView,RetrieveAPIView,UpdateAPIView
-from rest_framework.pagination import PageNumberPagination
+from rest_framework.generics import ListAPIView,RetrieveUpdateAPIView,CreateAPIView,UpdateAPIView
+from ..utils.custom_pagination import CustomPagination
 from zeroAppBackend.permisions import OnlyAPIPermission
 from .models import UserProfile , Picture
 from rest_framework.response import Response
+
 
 class UserViewList(ListAPIView):
     """
@@ -17,7 +18,12 @@ class UserViewList(ListAPIView):
     permission_classes = (IsAuthenticated,IsAdminUser,OnlyAPIPermission)
     queryset = User.objects.all().order_by('-date_joined')
     serializer_class = UserSerializer
-    pagination_class = PageNumberPagination
+    pagination_class = CustomPagination
+
+
+class AddUserView(CreateAPIView):
+    queryset = User.objects.all();
+    serializer_class = UserSerializer;
 
 
 class GroupViewSet(viewsets.ModelViewSet):
@@ -40,7 +46,7 @@ class ProfileViewGet(RetrieveUpdateAPIView):
     """
        API endpoint that allows obtain a User Profile.
        """
-
+    permission_classes = (IsAuthenticated, OnlyAPIPermission)
     serializer_class = ProfileSerializer
     lookup_field = 'pk'
     queryset = User.objects.all()
@@ -50,6 +56,7 @@ class ProfilePictureUpdate(UpdateAPIView):
     """
        API endpoint that update Users Profile Picture
        """
+    permission_classes = (IsAuthenticated, OnlyAPIPermission)
     serializer_class = PictureSerializer
     lookup_field = 'pk'
     queryset = Picture.objects.all()

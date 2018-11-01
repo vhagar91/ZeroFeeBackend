@@ -2,7 +2,7 @@ from django.conf.urls import url, include
 from rest_framework import routers
 from src.users import views
 from .serializers import UserSerializer,ProfileSerializer, PictureSerializer
-from .views import UserViewList, ProfileViewGet, ProfilePictureUpdate
+from .views import UserViewList, ProfileViewGet, ProfilePictureUpdate, AddUserView
 # router = routers.DefaultRouter()
 # router.register(r'list', views.UserViewList)
 # router.register(r'groups', views.GroupViewSet)
@@ -12,6 +12,7 @@ from .views import UserViewList, ProfileViewGet, ProfilePictureUpdate
 urlpatterns = [
     # url(r'^', include(router.urls)),
    url(r'^list/$', UserViewList.as_view(serializer_class=UserSerializer),name='users-list'),
+   url(r'^new/$', AddUserView.as_view(serializer_class=UserSerializer),name='new-user'),
    url(r'^profile/(?P<pk>\d+)/$', ProfileViewGet.as_view(serializer_class=ProfileSerializer)),
    url(r'^avatar/(?P<pk>\d+)/$', ProfilePictureUpdate.as_view(serializer_class=PictureSerializer)),
 
