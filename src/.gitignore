@@ -8,7 +8,7 @@
 # dependencies
 /venv
 /media
-.sqlite3
+*.sqlite3
 
 
 # IDEs and editors
