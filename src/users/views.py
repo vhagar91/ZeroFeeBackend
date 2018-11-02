@@ -8,8 +8,8 @@ from rest_framework.generics import ListAPIView,RetrieveUpdateAPIView,CreateAPIV
 from ..utils.custom_pagination import CustomPagination
 from zeroAppBackend.permisions import OnlyAPIPermission
 from .models import UserProfile , Picture
-from rest_framework.response import Response
-
+from .filters import UserFilter
+from django_filters.rest_framework import DjangoFilterBackend
 
 class UserViewList(ListAPIView):
     """
@@ -19,6 +19,8 @@ class UserViewList(ListAPIView):
     queryset = User.objects.all().order_by('-date_joined')
     serializer_class = UserSerializer
     pagination_class = CustomPagination
+    filter_backends = (DjangoFilterBackend,)
+    filterset_class = UserFilter
 
 
 class AddUserView(CreateAPIView):
