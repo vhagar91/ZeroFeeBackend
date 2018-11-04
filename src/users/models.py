@@ -1,17 +1,10 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils.translation import gettext_lazy as _
-from .utils import asset_upload
+from src.core.models import Picture
 from django.dispatch import receiver
 from django.db.models.signals import post_save
 # Create your models here.
-
-
-
-
-class Picture(models.Model):
-    thumbnail = models.ImageField(upload_to=asset_upload, null=True, blank=True)
-    normal = models.ImageField(upload_to=asset_upload, null=True, blank=True)
 
 
 class UserProfile(models.Model):
@@ -35,13 +28,10 @@ class UserProfile(models.Model):
     city = models.CharField(null=True, max_length=20, default='', help_text='Users Current City')
     country = models.CharField(null=True, max_length=20, default='', help_text='Users Current Country')
     about_me = models.CharField(null=True, max_length=30, default='', help_text='Users Extra Info')
-
+    phone = models.CharField(null=True,max_length=50, help_text='Phone number',default='')
     @receiver(post_save, sender=User)
     def create_user_profile(sender, instance, created, **kwargs):
         if created:
             UserProfile.objects.create(user=instance)
 
 
-class Email(models.Model):
-    profile = models.ForeignKey(UserProfile,on_delete=models.CASCADE,default=1)
-    email = models.EmailField();

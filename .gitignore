@@ -1,5 +1,8 @@
 # See http://help.github.com/ignore-files/ for more about ignoring files.
-
+# migrations
+/src/users/migrations
+/src/listings/migrations
+/src/core/migrations
 # compiled output
 /dist
 /tmp
@@ -8,7 +11,7 @@
 # dependencies
 /venv
 /media
-*.sqlite3
+
 
 
 # IDEs and editors
@@ -41,4 +44,4 @@ testem.log
 # System Files
 .DS_Store
 Thumbs.db
-
+*.sqlite3

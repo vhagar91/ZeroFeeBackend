@@ -44,7 +44,8 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
     'rest_framework_api_key',
 
-
+    'src.core',
+    'src.listings',
     'src.users'
 
 ]

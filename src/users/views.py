@@ -24,6 +24,7 @@ class UserViewList(ListAPIView):
 
 
 class AddUserView(CreateAPIView):
+    permission_classes = (IsAuthenticated, IsAdminUser, OnlyAPIPermission)
     queryset = User.objects.all();
     serializer_class = UserSerializer;
 

@@ -1,5 +1,6 @@
 from django.contrib.auth.models import User, Group
 from .models import *
+from src.core.models import Picture
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from django.contrib.auth import authenticate
 from rest_framework import serializers
@@ -7,7 +8,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.utils.six import text_type
 from django.dispatch import receiver
 from rest_framework.serializers import raise_errors_on_nested_writes
-from rest_framework.utils import  model_meta
+from rest_framework.utils import model_meta
 import os
 
 
@@ -86,16 +87,13 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
         fields = ('username', 'email', 'groups', 'first_name', 'last_name', 'is_staff', 'password', 'group')
 
 
-
     def create(self, validated_data):
         user = User.objects.create(
             username=validated_data['username'],
             email= validated_data['email'],
             last_name= validated_data['last_name'],
             first_name= validated_data['first_name'],
-            is_staff= validated_data['is_staff']
-
-                                   )
+            is_staff= validated_data['is_staff'])
         users_group = Group.objects.get(name=validated_data['group'])
         user.set_password(validated_data['password'])
         user.save()
