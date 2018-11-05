@@ -12,11 +12,19 @@ from .filters import ListingFilter
 
 class ListingViewList(ListAPIView):
     """
-    API endpoint that allows users to be viewed or edited.
+    API endpoint that allows list of Listings.
     """
-    # permission_classes = (IsAuthenticated,IsAdminUser,OnlyAPIPermission)
+    permission_classes = (IsAuthenticated,IsAdminUser,OnlyAPIPermission)
     queryset = Listing.objects.all()
     serializer_class = ListingSerializer
     pagination_class = CustomPagination
     filter_backends = (DjangoFilterBackend,)
     filterset_class = ListingFilter
+
+class ListingViewCreate(CreateAPIView):
+    """
+    API endpoint that allows create a Listing.
+    """
+    # permission_classes = (IsAuthenticated,IsAdminUser,OnlyAPIPermission)
+    queryset = Listing.objects.all()
+    serializer_class = ListingSerializer

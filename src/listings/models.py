@@ -1,7 +1,7 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.models import User
-from src.core.models import Picture
+from src.core.models import Currency
 from src.core.utils import asset_upload_property
 
 
@@ -20,9 +20,10 @@ class PictureListing(models.Model):
     thumbnail = models.ImageField(upload_to=asset_upload_property, null=True, blank=True)
     normal = models.ImageField(upload_to=asset_upload_property, null=True, blank=True)
 
+
 # Create your models here.
 class Price (models.Model):
-    currency = models.CharField(max_length=200,null=False, help_text='Base currency')
+    currency = models.OneToOneField(Currency,unique=True,null=False, help_text='Base currency',on_delete=models.CASCADE)
     basePrice = models.IntegerField(null=False,default=0,help_text='Base Price')
     extraPersonFee = models.IntegerField(null=False,default=0,help_text='Extra person Fee')
 
@@ -58,11 +59,10 @@ class Listing (models.Model):
     beds = models.IntegerField(default=0, help_text='How many Beds the listing have')
     checkInTime = models.TimeField(null=True, help_text='Time for checkIn at the listing')
     checkOutTime = models.TimeField(null=True, help_text='Time for chekOut at the listing')
-    propertyType = models.IntegerField(null=False, choices=PROPERTY_TYPE_CHOICES,default=PROPERTY_TYPE_UNKNNOWN,
+    propertyType = models.IntegerField(null=True, choices=PROPERTY_TYPE_CHOICES,default=PROPERTY_TYPE_UNKNNOWN,
                                     help_text='Property Type')
-    roomType = models.IntegerField(null=False, choices=ROOM_TYPE_CHOICES, default=ROOM_TYPE_UNKNOWN, help_text='Room Type Full Property/Room')
-    owner = models.OneToOneField(User, unique=True, null=True, on_delete=models.CASCADE,
-                                 help_text='Owner of the listing')
+    roomType = models.IntegerField(null=True, choices=ROOM_TYPE_CHOICES, default=ROOM_TYPE_UNKNOWN, help_text='Room Type Full Property/Room')
+    owner = models.ForeignKey(User,on_delete=models.CASCADE)
     nickname = models.CharField(null=False, default='Nickname', max_length=200, help_text='Listing Nickname')
     address = models.OneToOneField(Address,null=True,on_delete=models.CASCADE, help_text='Listing Address')
     createAt = models.DateTimeField(auto_now=True, help_text='Date of creation')

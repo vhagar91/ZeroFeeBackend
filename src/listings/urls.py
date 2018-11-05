@@ -7,6 +7,7 @@ from .views import *
 urlpatterns = [
     # url(r'^', include(router.urls)),
    url(r'^list/$', ListingViewList.as_view(serializer_class=ListingSerializer),name='listings-list'),
+   url(r'^create/$', ListingViewCreate.as_view(serializer_class=ListingSerializer), name='listings-create'),
 
 
 ]
