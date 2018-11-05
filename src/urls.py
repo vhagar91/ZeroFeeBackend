@@ -20,6 +20,8 @@ from django.conf.urls import url, include
 urlpatterns = [
    url(r'^users/',
         include('src.users.urls')),
+   url(r'^listings/',
+        include('src.listings.urls')),
 
 ]
 

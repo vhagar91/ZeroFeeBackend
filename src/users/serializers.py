@@ -126,9 +126,10 @@ class ProfileSerializer(UserSerializer):
     country = serializers.CharField(source="userprofile.country")
     about_me = serializers.CharField(source="userprofile.about_me")
     picture = PictureSerializer(source= 'userprofile.picture')
+    phone = serializers.CharField(source='userprofile.phone')
 
     class Meta(UserSerializer.Meta):
-        fields = ('username','email','first_name','last_name', 'gender','picture', 'address', 'city', 'country' ,'about_me')
+        fields = ('username','email','first_name','last_name', 'gender','picture', 'address', 'city', 'country', 'about_me', 'phone')
         depth = 1
 
     def update(self, instance, validated_data):
@@ -140,8 +141,6 @@ class ProfileSerializer(UserSerializer):
         pic_info = model_meta.get_field_info(picture)
 
         for attr, value in validated_data.items():
-
-
             if attr == 'userprofile':
                 for attr2, value2 in value.items():
                     if attr2 == 'picture':

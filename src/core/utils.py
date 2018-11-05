@@ -10,3 +10,12 @@ def asset_upload(instance, filename):
 
 
     return output
+
+def asset_upload_property(instance, filename):
+
+
+
+    output = 'listing/%s' % filename
+
+
+    return output
