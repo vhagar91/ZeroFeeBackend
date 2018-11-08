@@ -166,8 +166,8 @@ SIMPLE_JWT = {
     'TOKEN_TYPE_CLAIM': 'token_type',
 
     'SLIDING_TOKEN_REFRESH_EXP_CLAIM': 'refresh_exp',
-    'SLIDING_TOKEN_LIFETIME': timedelta(minutes=120),
-    'SLIDING_TOKEN_REFRESH_LIFETIME': timedelta(days=10),
+    'SLIDING_TOKEN_LIFETIME': timedelta(minutes=240),
+    'SLIDING_TOKEN_REFRESH_LIFETIME': timedelta(days=240),
 }
 # Internationalization
 # https://docs.djangoproject.com/en/1.8/topics/i18n/

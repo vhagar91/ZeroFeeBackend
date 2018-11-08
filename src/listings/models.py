@@ -64,6 +64,7 @@ class Listing (models.Model):
     roomType = models.IntegerField(null=True, choices=ROOM_TYPE_CHOICES, default=ROOM_TYPE_UNKNOWN, help_text='Room Type Full Property/Room')
     owner = models.ForeignKey(User,on_delete=models.CASCADE)
     nickname = models.CharField(null=False, default='Nickname', max_length=200, help_text='Listing Nickname')
+    publicName = models.CharField(null=False, default='Nickname', max_length=200, help_text='Listing Nickname')
     address = models.OneToOneField(Address,null=True,on_delete=models.CASCADE, help_text='Listing Address')
     createAt = models.DateTimeField(auto_now=True, help_text='Date of creation')
     isActive = models.BooleanField(default=False, help_text='Is the listing active or not')
