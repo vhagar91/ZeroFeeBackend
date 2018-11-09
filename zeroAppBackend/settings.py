@@ -26,7 +26,7 @@ SECRET_KEY = '##o*8s@tv+((ik5=y*r-ac5n1&=8%$ch&f!xj3b9@_^@xiktz@'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['zerofeeapi.herokuapp.com']
 
 
 # Application definition
