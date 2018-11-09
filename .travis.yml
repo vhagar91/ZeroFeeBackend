@@ -14,4 +14,7 @@ deploy:
   api_key:
     secure: $HEROKU_API_KEY
   app: zerofeeapi
-  run: "python manage.py migrate"
+  run:
+    - "python zeroAppBackend/manage.py makemigrations"
+    - "python zeroAppBackend/manage.py migrate"
+    - restart
