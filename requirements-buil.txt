@@ -12,7 +12,6 @@ django-rest-swagger==2.2.0
 djangorestframework==3.8.2
 djangorestframework-simplejwt==3.2.3
 drfapikey==0.0.3
-django-heroku==0.3.1
 gunicorn==19.9.0
 idna==2.7
 itypes==1.1.0
