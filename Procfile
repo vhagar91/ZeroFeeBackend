@@ -1,0 +1,1 @@
+web: gunicorn zeroAppBackend.wsgi --log-file -
