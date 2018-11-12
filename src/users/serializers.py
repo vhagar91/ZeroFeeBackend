@@ -68,8 +68,6 @@ class CustomJWTSerializer(TokenObtainPairSerializer):
             return ''
 
 
-
-
 class GroupSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
@@ -86,7 +84,6 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
         model = User
         fields = ('username', 'email', 'groups', 'first_name', 'last_name', 'is_staff', 'password', 'group')
 
-
     def create(self, validated_data):
         user = User.objects.create(
             username=validated_data['username'],
@@ -100,13 +97,12 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
         users_group.user_set.add(user)
         return user
 
-class PictureSerializer(serializers.ModelSerializer):
 
+class PictureSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Picture
         fields = ('id' , 'thumbnail', 'normal')
-
 
     @receiver(models.signals.pre_delete, sender=UserProfile)
     def auto_delete_avatar_on_delete(sender, instance, **kwargs):

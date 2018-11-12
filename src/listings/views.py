@@ -3,7 +3,7 @@ from rest_framework.generics import ListAPIView,RetrieveUpdateAPIView,CreateAPIV
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from zeroAppBackend.permisions import OnlyAPIPermission
 from .models import Listing
-from .serializers import ListingSerializer
+from .serializers import ListingSerializer, TermsSerializer
 from ..utils.custom_pagination import CustomPagination
 from django_filters.rest_framework import DjangoFilterBackend
 from .filters import ListingFilter
@@ -21,10 +21,22 @@ class ListingViewList(ListAPIView):
     filter_backends = (DjangoFilterBackend,)
     filterset_class = ListingFilter
 
+
 class ListingViewCreate(CreateAPIView):
     """
     API endpoint that allows create a Listing.
     """
-    # permission_classes = (IsAuthenticated,IsAdminUser,OnlyAPIPermission)
+    permission_classes = (IsAuthenticated,IsAdminUser,OnlyAPIPermission)
     queryset = Listing.objects.all()
     serializer_class = ListingSerializer
+
+
+class TermsUpdateorCreate(UpdateAPIView):
+    """
+    API endpoint that allows update a Terms.
+    """
+    # permission_classes = (IsAuthenticated,IsAdminUser,OnlyAPIPermission)
+    queryset = Listing.objects.all()
+    serializer_class = TermsSerializer
+    lookup_field = 'pk'
+

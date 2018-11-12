@@ -32,10 +32,24 @@ class PictureSerializer(serializers.ModelSerializer):
 
 
 class TermsSerializer (serializers.ModelSerializer):
+    min = serializers.CharField(write_only=True)
+    max = serializers.CharField(write_only=True)
 
     class Meta:
-        model = Terms
-        fields = ('minNights', 'maxNights')
+        model = Listing
+        fields = ('min', 'max', 'terms')
+
+    def update(self, instance, validated_data):
+        if(instance.terms):
+            terms = instance.terms
+            terms.minNights = validated_data['min']
+            terms.maxNights = validated_data['max']
+        else:
+            terms = Terms.objects.create(minNights=validated_data['min'], maxNights=validated_data['max'])
+            instance.terms = terms
+
+        instance.save()
+        return instance
 
 
 class AddressSerializer (serializers.ModelSerializer):
@@ -58,7 +72,7 @@ class ListingSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Listing
-        fields = ('pk','owner','address','cost','currency','nickname', 'accommodates', 'bedrooms', 'beds','propertyType', 'roomType')
+        fields = ('pk','owner','publicName','address','cost','currency','nickname', 'accommodates', 'bedrooms', 'beds','propertyType', 'roomType')
         extra_kwargs = {
             'pk': {'read_only': True},
             'cost': {'read_only': True},
@@ -68,7 +82,8 @@ class ListingSerializer(serializers.ModelSerializer):
             'beds': {'read_only': True},
             'propertyType': {'read_only': True},
             'roomType': {'read_only': True},
-            'nickname': {'required': True}
+            'nickname': {'required': True},
+            'publicName': {'read_only': True}
         }
 
     def create(self, validated_data):

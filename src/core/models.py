@@ -11,3 +11,8 @@ class Picture(models.Model):
 class Currency (models.Model):
    code = models.CharField(max_length=5,null=True,help_text='Currency Code exp EUR')
    name = models.CharField(max_length=20,null=True,help_text='Currency Name')
+
+
+class Country (models.Model):
+    code = models.CharField(max_length=10, null=True,help_text='Country Code')
+    name = models.CharField(max_length=30,null=True, help_text='Country Name')
