@@ -3,7 +3,7 @@ from rest_framework.generics import ListAPIView,RetrieveUpdateAPIView,CreateAPIV
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from zeroAppBackend.permisions import OnlyAPIPermission
 from .models import Listing
-from .serializers import ListingSerializer, TermsSerializer
+from .serializers import ListingSerializer, ListingTermsSerializer , ListingGeneralSerializer, ListingAddressSerializer
 from ..utils.custom_pagination import CustomPagination
 from django_filters.rest_framework import DjangoFilterBackend
 from .filters import ListingFilter
@@ -31,12 +31,32 @@ class ListingViewCreate(CreateAPIView):
     serializer_class = ListingSerializer
 
 
-class TermsUpdateorCreate(UpdateAPIView):
+class TermsUpdateorCreate(RetrieveUpdateAPIView):
     """
     API endpoint that allows update a Terms.
     """
     # permission_classes = (IsAuthenticated,IsAdminUser,OnlyAPIPermission)
     queryset = Listing.objects.all()
-    serializer_class = TermsSerializer
+    serializer_class = ListingTermsSerializer
+    lookup_field = 'pk'
+
+
+class AddressUpdateorCreate(RetrieveUpdateAPIView):
+    """
+    API endpoint that allows update a Address.
+    """
+    # permission_classes = (IsAuthenticated,IsAdminUser,OnlyAPIPermission)
+    queryset = Listing.objects.all()
+    serializer_class = ListingAddressSerializer
+    lookup_field = 'pk'
+
+
+class ListingGeneralUpdate(UpdateAPIView):
+    """
+    API endpoint that allows update a General Data.
+    """
+    # permission_classes = (IsAuthenticated,IsAdminUser,OnlyAPIPermission)
+    queryset = Listing.objects.all()
+    serializer_class = ListingGeneralSerializer
     lookup_field = 'pk'
 

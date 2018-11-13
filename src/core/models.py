@@ -9,7 +9,7 @@ class Picture(models.Model):
 
 
 class Currency (models.Model):
-   code = models.CharField(max_length=5,null=True,help_text='Currency Code exp EUR')
+   code = models.CharField(max_length=5,null=True,help_text='Currency Code example EUR')
    name = models.CharField(max_length=20,null=True,help_text='Currency Name')
 
 

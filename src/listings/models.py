@@ -5,8 +5,6 @@ from src.core.models import Currency
 from src.core.utils import asset_upload_property
 
 
-
-
 class Address(models.Model):
     full = models.CharField(max_length=250, null=True, help_text='Full address')
     lng = models.FloatField(help_text='Geo Longitude',null=True)
@@ -23,9 +21,10 @@ class PictureListing(models.Model):
 
 # Create your models here.
 class Price (models.Model):
-    currency = models.OneToOneField(Currency,unique=True,null=False, help_text='Base currency',on_delete=models.CASCADE)
-    basePrice = models.IntegerField(null=False,default=0,help_text='Base Price')
-    extraPersonFee = models.IntegerField(null=False,default=0,help_text='Extra person Fee')
+    currency = models.OneToOneField(Currency,unique=True, null=False, help_text='Base currency',on_delete=models.CASCADE)
+    basePrice = models.IntegerField(null=False,default=0, help_text='Base Price')
+    extraPersonFee = models.IntegerField(null=False,default=0, help_text='Extra person Fee')
+    breakfastFee = models.IntegerField(null=True, help_text='breakfast fee')
 
 
 class Terms (models.Model):

@@ -31,19 +31,23 @@ class PictureSerializer(serializers.ModelSerializer):
                     os.remove(instance.picture.normal.path)
 
 
-class TermsSerializer (serializers.ModelSerializer):
-    min = serializers.CharField(write_only=True)
-    max = serializers.CharField(write_only=True)
+class ListingTermsSerializer (serializers.ModelSerializer):
+    min = serializers.CharField(write_only=True, help_text='minimun nights stay')
+    max = serializers.CharField(write_only=True, help_text='maximun nights stay')
+    minNights = serializers.CharField(read_only=True,source='terms.minNights')
+    maxNights = serializers.CharField(read_only=True,source='terms.maxNights')
 
     class Meta:
         model = Listing
-        fields = ('min', 'max', 'terms')
+        fields = ('min', 'max', 'minNights','maxNights')
 
     def update(self, instance, validated_data):
-        if(instance.terms):
+
+        if instance.terms:
             terms = instance.terms
             terms.minNights = validated_data['min']
             terms.maxNights = validated_data['max']
+            terms.save()
         else:
             terms = Terms.objects.create(minNights=validated_data['min'], maxNights=validated_data['max'])
             instance.terms = terms
@@ -53,15 +57,43 @@ class TermsSerializer (serializers.ModelSerializer):
 
 
 class AddressSerializer (serializers.ModelSerializer):
+
     class Meta:
         model = Address
         fields = '__all__'
 
 
-class PriceSerializer(serializers.ModelSerializer):
+class ListingPriceSerializer(serializers.ModelSerializer):
+
     class Meta:
-        model = Price
+        model = Listing
         fields = ('currency', 'basePrice','extraPersonFee')
+
+
+class ListingAddressSerializer(serializers.ModelSerializer):
+    full = serializers.CharField(source='address.full',help_text='full address',required=False)
+    lng = serializers.FloatField(source='address.lng', help_text='map x localization',required=False)
+    lat = serializers.FloatField(source='address.lat',help_text='map y localization',required=False)
+    street = serializers.CharField(source='address.street', help_text='street',required=False)
+    city = serializers.CharField(source='address.city', help_text='city',required=False)
+    country = serializers.CharField(source='address.city',help_text='country',required=False)
+
+    class Meta:
+        model = Listing
+        fields = ('full', 'lng','lat','street','city','country')
+
+    def update(self, instance, validated_data):
+        address_data = validated_data['address']
+        if instance.address:
+            AddressSerializer.update(AddressSerializer(),instance.address,address_data)
+        else:
+            address = Address.objects.create(city=address_data['city'], country=address_data['country'],
+                                             street = address_data['street'],full = address_data['full'],
+                                             lat=address_data['lat'],lng=address_data['lng'])
+            instance.address = address
+
+        instance.save()
+        return instance
 
 
 class ListingSerializer(serializers.ModelSerializer):
@@ -92,6 +124,16 @@ class ListingSerializer(serializers.ModelSerializer):
         address = AddressSerializer.create(AddressSerializer(), validated_data=address_data)
         listing = Listing.objects.update_or_create(owner=user,address=address,nickname=validated_data['nickname'])
         return listing
+
+
+class ListingGeneralSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Listing
+        fields = (
+         'publicName', 'nickname', 'accommodates', 'bedrooms', 'beds', 'checkInTime', 'checkOutTime', 'propertyType', 'roomType')
+
+
 
 
 
