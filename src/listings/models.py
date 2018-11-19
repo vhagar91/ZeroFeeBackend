@@ -73,6 +73,7 @@ class Listing (models.Model):
     pictures = models.ManyToManyField(PictureListing,related_name='pictures',help_text='Pictures Gallery')
     price = models.OneToOneField(Price,unique=True,null=True,on_delete=models.CASCADE, help_text='listing prices')
     terms = models.OneToOneField(Terms,unique=True,null=True,on_delete=models.CASCADE, help_text='listing min and max stay allowed')
+    description = models.CharField(max_length=240, help_text='listing description',default='')
 
 
 class Reservation (models.Model):

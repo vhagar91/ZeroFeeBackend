@@ -1,9 +1,9 @@
 from django.shortcuts import render
-from rest_framework.generics import ListAPIView,RetrieveUpdateAPIView,CreateAPIView,UpdateAPIView
+from rest_framework.generics import ListAPIView,RetrieveUpdateAPIView,CreateAPIView,UpdateAPIView,RetrieveAPIView
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from zeroAppBackend.permisions import OnlyAPIPermission
 from .models import Listing
-from .serializers import ListingSerializer, ListingTermsSerializer , ListingGeneralSerializer, ListingAddressSerializer
+from .serializers import ListingSerializer, ListingTermsSerializer , ListingGeneralSerializer, ListingAddressSerializer, ListingGetSerializer
 from ..utils.custom_pagination import CustomPagination
 from django_filters.rest_framework import DjangoFilterBackend
 from .filters import ListingFilter
@@ -60,3 +60,22 @@ class ListingGeneralUpdate(UpdateAPIView):
     serializer_class = ListingGeneralSerializer
     lookup_field = 'pk'
 
+
+class ListingGeneralUpdate(UpdateAPIView):
+    """
+    API endpoint that allows update a General Data.
+    """
+    # permission_classes = (IsAuthenticated,IsAdminUser,OnlyAPIPermission)
+    queryset = Listing.objects.all()
+    serializer_class = ListingGeneralSerializer
+    lookup_field = 'pk'
+
+
+class ListingGet(RetrieveAPIView):
+    """
+    API endpoint that allows update a General Data.
+    """
+    # permission_classes = (IsAuthenticated,IsAdminUser,OnlyAPIPermission)
+    queryset = Listing.objects.all()
+    serializer_class = ListingGetSerializer
+    lookup_field = 'pk'

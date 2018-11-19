@@ -134,6 +134,22 @@ class ListingGeneralSerializer(serializers.ModelSerializer):
          'publicName', 'nickname', 'accommodates', 'bedrooms', 'beds', 'checkInTime', 'checkOutTime', 'propertyType', 'roomType')
 
 
+class ListingGetSerializer(serializers.ModelSerializer):
+    address = AddressSerializer(help_text='Address of this listing')
+    cost = serializers.IntegerField(source='price.basePrice', read_only=True)
+    currency = serializers.CharField(source='price.currency.code', read_only=True)
+    extraFee = serializers.CharField(source='price.currency.extraPersonFee', read_only=True)
+    minNights = serializers.CharField(read_only=True, source='terms.minNights')
+    maxNights = serializers.CharField(read_only=True, source='terms.maxNights')
+
+    class Meta:
+        model = Listing
+        fields = (
+         'pk','publicName', 'nickname', 'accommodates', 'bedrooms', 'beds', 'checkInTime', 'checkOutTime', 'propertyType', 'roomType','address'
+        ,'cost','currency','minNights','maxNights','extraFee','isActive','description')
+
+
+
 
 
 
