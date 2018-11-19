@@ -22,9 +22,9 @@ class PictureListing(models.Model):
 # Create your models here.
 class Price (models.Model):
     currency = models.OneToOneField(Currency,unique=True, null=False, help_text='Base currency',on_delete=models.CASCADE)
-    basePrice = models.IntegerField(null=False,default=0, help_text='Base Price')
-    extraPersonFee = models.IntegerField(null=False,default=0, help_text='Extra person Fee')
-    breakfastFee = models.IntegerField(null=True, help_text='breakfast fee')
+    basePrice = models.FloatField(null=False,default=0, help_text='Base Price')
+    extraPersonFee = models.FloatField(null=False,default=0, help_text='Extra person Fee')
+    breakfastFee = models.FloatField(null=True, help_text='breakfast fee')
 
 
 class Terms (models.Model):

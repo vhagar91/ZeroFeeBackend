@@ -32,10 +32,10 @@ class PictureSerializer(serializers.ModelSerializer):
 
 
 class ListingTermsSerializer (serializers.ModelSerializer):
-    min = serializers.CharField(write_only=True, help_text='minimun nights stay')
-    max = serializers.CharField(write_only=True, help_text='maximun nights stay')
-    minNights = serializers.CharField(read_only=True,source='terms.minNights')
-    maxNights = serializers.CharField(read_only=True,source='terms.maxNights')
+    minNights = serializers.CharField(write_only=True, help_text='minimun nights stay')
+    maxNights = serializers.CharField(write_only=True, help_text='maximun nights stay')
+    min = serializers.CharField(read_only=True,source='terms.minNights')
+    max = serializers.CharField(read_only=True,source='terms.maxNights')
 
     class Meta:
         model = Listing
@@ -45,11 +45,11 @@ class ListingTermsSerializer (serializers.ModelSerializer):
 
         if instance.terms:
             terms = instance.terms
-            terms.minNights = validated_data['min']
-            terms.maxNights = validated_data['max']
+            terms.minNights = validated_data['minNights']
+            terms.maxNights = validated_data['maxNights']
             terms.save()
         else:
-            terms = Terms.objects.create(minNights=validated_data['min'], maxNights=validated_data['max'])
+            terms = Terms.objects.create(minNights=validated_data['minNights'], maxNights=validated_data['maxNights'])
             instance.terms = terms
 
         instance.save()
@@ -131,16 +131,16 @@ class ListingGeneralSerializer(serializers.ModelSerializer):
     class Meta:
         model = Listing
         fields = (
-         'publicName', 'nickname', 'accommodates', 'bedrooms', 'beds', 'checkInTime', 'checkOutTime', 'propertyType', 'roomType')
+         'pk','publicName', 'nickname', 'accommodates', 'bedrooms', 'beds', 'checkInTime', 'checkOutTime', 'propertyType', 'roomType', 'description')
 
 
 class ListingGetSerializer(serializers.ModelSerializer):
     address = AddressSerializer(help_text='Address of this listing')
-    cost = serializers.IntegerField(source='price.basePrice', read_only=True)
+    cost = serializers.FloatField(source='price.basePrice', read_only=True)
     currency = serializers.CharField(source='price.currency.code', read_only=True)
-    extraFee = serializers.CharField(source='price.currency.extraPersonFee', read_only=True)
-    minNights = serializers.CharField(read_only=True, source='terms.minNights')
-    maxNights = serializers.CharField(read_only=True, source='terms.maxNights')
+    extraFee = serializers.FloatField(source='price.currency.extraPersonFee', read_only=True)
+    minNights = serializers.IntegerField(read_only=True, source='terms.minNights')
+    maxNights = serializers.IntegerField(read_only=True, source='terms.maxNights')
 
     class Meta:
         model = Listing
