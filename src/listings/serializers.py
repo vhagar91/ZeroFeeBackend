@@ -63,11 +63,53 @@ class AddressSerializer (serializers.ModelSerializer):
         fields = '__all__'
 
 
+class CurrencySerializer (serializers.ModelSerializer):
+
+    class Meta:
+        model = Currency
+        fields = '__all__'
+
+
+class PriceSerializer (serializers.ModelSerializer):
+
+    class Meta:
+        model = Price
+        fields = ('currency', 'basePrice', 'extraPersonFee', 'breakfastFee')
+
+    def update(self, instance, validated_data):
+        currency_id = validated_data['currency_id']
+        if instance.currency:
+            if instance.currency.id == currency_id:
+               validated_data['currency'] = instance.currency
+               super(PriceSerializer, self).update(instance,validated_data)
+            else:
+                cur = Currency.objects.get(pk=currency_id)
+                validated_data['currency'] = cur
+                super(PriceSerializer, self).update(instance,validated_data)
+
+
 class ListingPriceSerializer(serializers.ModelSerializer):
+    currency = serializers.IntegerField(source='price.currency_id', help_text='Currency', required=False)
+    basePrice = serializers.FloatField(source='price.basePrice', help_text='Base Price', required=False)
+    extraPersonFee = serializers.FloatField(source='price.extraPersonFee', help_text='Fee for a extra person', required=False)
+    breakfastFee = serializers.FloatField(source='price.breakfastFee', help_text='breakfast price', required=False)
 
     class Meta:
         model = Listing
-        fields = ('currency', 'basePrice','extraPersonFee')
+        fields = ('currency', 'basePrice','extraPersonFee','breakfastFee')
+
+    def update(self, instance, validated_data):
+        price_data = validated_data['price']
+        if instance.price:
+            PriceSerializer.update(PriceSerializer(), instance.price, price_data)
+        else:
+            curr = Currency.objects.get(pk=price_data['currency_id'])
+            price = Price.objects.create(currency=curr, basePrice=price_data['basePrice'],
+                                             extraPersonFee = price_data['extraPersonFee'],breakfastFee = price_data['breakfastFee'])
+            instance.price = price
+
+        instance.save()
+        return instance
 
 
 class ListingAddressSerializer(serializers.ModelSerializer):
@@ -76,7 +118,7 @@ class ListingAddressSerializer(serializers.ModelSerializer):
     lat = serializers.FloatField(source='address.lat',help_text='map y localization',required=False)
     street = serializers.CharField(source='address.street', help_text='street',required=False)
     city = serializers.CharField(source='address.city', help_text='city',required=False)
-    country = serializers.CharField(source='address.city',help_text='country',required=False)
+    country = serializers.CharField(source='address.country',help_text='country',required=False)
 
     class Meta:
         model = Listing
@@ -136,8 +178,7 @@ class ListingGeneralSerializer(serializers.ModelSerializer):
 
 class ListingGetSerializer(serializers.ModelSerializer):
     address = AddressSerializer(help_text='Address of this listing')
-    cost = serializers.FloatField(source='price.basePrice', read_only=True)
-    currency = serializers.CharField(source='price.currency.code', read_only=True)
+    price = PriceSerializer(help_text='Price of this listing')
     extraFee = serializers.FloatField(source='price.currency.extraPersonFee', read_only=True)
     minNights = serializers.IntegerField(read_only=True, source='terms.minNights')
     maxNights = serializers.IntegerField(read_only=True, source='terms.maxNights')
@@ -146,7 +187,7 @@ class ListingGetSerializer(serializers.ModelSerializer):
         model = Listing
         fields = (
          'pk','publicName', 'nickname', 'accommodates', 'bedrooms', 'beds', 'checkInTime', 'checkOutTime', 'propertyType', 'roomType','address'
-        ,'cost','currency','minNights','maxNights','extraFee','isActive','description')
+        ,'price','minNights','maxNights','extraFee','isActive','description')
 
 
 

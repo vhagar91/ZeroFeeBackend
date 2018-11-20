@@ -9,5 +9,5 @@ urlpatterns = [
    url(r'^terms/(?P<pk>\d+)/$', TermsUpdateorCreate.as_view(serializer_class=ListingTermsSerializer)),
    url(r'^address/(?P<pk>\d+)/$', AddressUpdateorCreate.as_view(serializer_class=ListingAddressSerializer)),
    url(r'^general/(?P<pk>\d+)/$', ListingGeneralUpdate.as_view(serializer_class=ListingGeneralSerializer)),
-
+   url(r'^prices/(?P<pk>\d+)/$', ListingPriceUpdate.as_view(serializer_class=ListingPriceSerializer)),
 ]
