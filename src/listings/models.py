@@ -14,11 +14,6 @@ class Address(models.Model):
     country = models.CharField(max_length=200,null=True,help_text='Country')
 
 
-class PictureListing(models.Model):
-    thumbnail = models.ImageField(upload_to=asset_upload_property, null=True, blank=True)
-    normal = models.ImageField(upload_to=asset_upload_property, null=True, blank=True)
-
-
 # Create your models here.
 class Price (models.Model):
     currency = models.OneToOneField(Currency,unique=True, null=False, help_text='Base currency',on_delete=models.CASCADE)
@@ -67,10 +62,6 @@ class Listing (models.Model):
     address = models.OneToOneField(Address,null=True,on_delete=models.CASCADE, help_text='Listing Address')
     createAt = models.DateTimeField(auto_now=True, help_text='Date of creation')
     isActive = models.BooleanField(default=False, help_text='Is the listing active or not')
-    picture = models.OneToOneField(PictureListing, unique=True, null=True, on_delete=models.CASCADE, help_text=_(
-        'Main listing Picture'
-    ))
-    pictures = models.ManyToManyField(PictureListing,related_name='pictures',help_text='Pictures Gallery')
     price = models.OneToOneField(Price,unique=True,null=True,on_delete=models.CASCADE, help_text='listing prices')
     terms = models.OneToOneField(Terms,unique=True,null=True,on_delete=models.CASCADE, help_text='listing min and max stay allowed')
     description = models.CharField(max_length=240, help_text='listing description',default='')
@@ -107,3 +98,9 @@ class Reservation (models.Model):
                                     help_text='Status')
     guest = models.OneToOneField(User,null=False,unique=True,on_delete=models.CASCADE,help_text=('reference to de client'))
 
+
+class PictureListing(models.Model):
+    thumbnail = models.ImageField(upload_to=asset_upload_property, null=True, blank=True)
+    normal = models.ImageField(upload_to=asset_upload_property, null=True, blank=True)
+    is_portrait = models.BooleanField(default=False)
+    listing = models.ForeignKey(Listing,related_name='gallery', on_delete=models.CASCADE)

@@ -10,4 +10,5 @@ urlpatterns = [
    url(r'^address/(?P<pk>\d+)/$', AddressUpdateorCreate.as_view(serializer_class=ListingAddressSerializer)),
    url(r'^general/(?P<pk>\d+)/$', ListingGeneralUpdate.as_view(serializer_class=ListingGeneralSerializer)),
    url(r'^prices/(?P<pk>\d+)/$', ListingPriceUpdate.as_view(serializer_class=ListingPriceSerializer)),
+   url(r'^gallery/(?P<pk>\d+)/$', ListingPictures.as_view(serializer_class=ListingPicturesSerializer)),
 ]
