@@ -102,7 +102,7 @@ class PictureSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Picture
-        fields = ('id' , 'thumbnail', 'normal')
+        fields = ('id', 'thumbnail', 'normal')
 
     @receiver(models.signals.pre_delete, sender=UserProfile)
     def auto_delete_avatar_on_delete(sender, instance, **kwargs):

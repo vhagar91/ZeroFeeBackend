@@ -14,12 +14,18 @@ import os
 
 
 class PictureSerializer(serializers.ModelSerializer):
-    thumb = serializers.ImageField(source='thumbnail')
-    src = serializers.ImageField(source='normal')
+    thumb = serializers.ImageField(source='thumbnail',read_only=True)
+    src = serializers.ImageField(source='normal',read_only= True)
 
     class Meta:
         model = PictureListing
-        fields = ('id','thumb', 'src', 'is_portrait')
+        fields = ('id','thumb', 'src', 'listing','thumbnail','normal','is_portrait')
+        extra_kwargs = {
+            'id': {'read_only':True},
+            'thumbnail': {'write_only': True},
+            'normal': {'write_only': True},
+            'listing': {'write_only': True}
+        }
 
     @receiver(signals.pre_delete, sender=PictureListing)
     def auto_delete_pictures_on_delete(sender, instance, **kwargs):
@@ -27,11 +33,10 @@ class PictureSerializer(serializers.ModelSerializer):
         when corresponding `File` object is deleted.
      """
         if instance._state.adding is False:
-            if instance.picture:
-                if os.path.isfile(instance.picture.thumbnail.path):
-                    os.remove(instance.picture.thumbnail.path)
-                    os.remove(instance.picture.normal.path)
-
+            if instance:
+                if os.path.isfile(instance.thumbnail.path):
+                    os.remove(instance.thumbnail.path)
+                    os.remove(instance.normal.path)
 
 
 class ListingTermsSerializer (serializers.ModelSerializer):
@@ -195,9 +200,12 @@ class ListingGetSerializer(serializers.ModelSerializer):
 
 class ListingPicturesSerializer(serializers.ModelSerializer):
     gallery = PictureSerializer(many=True)
+
     class Meta:
         model = Listing
         fields = ('gallery',)
+
+
 
 
 

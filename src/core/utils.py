@@ -5,11 +5,11 @@ import os
 def asset_upload(instance, filename):
 
 
-
     output = 'users/%s' % filename
 
 
     return output
+
 
 def asset_upload_property(instance, filename):
 
