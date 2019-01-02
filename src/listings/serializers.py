@@ -22,7 +22,7 @@ class PictureSerializer(serializers.ModelSerializer):
         fields = ('id','thumb', 'src', 'listing','thumbnail','normal','is_portrait')
         extra_kwargs = {
             'id': {'read_only':True},
-            'thumbnail': {'write_only': True},
+            'thumbnail': {'read_only': True},
             'normal': {'write_only': True},
             'listing': {'write_only': True}
         }

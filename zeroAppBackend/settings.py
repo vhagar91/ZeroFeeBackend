@@ -150,7 +150,7 @@ REST_FRAMEWORK = {
 
 }
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=240),
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=10000),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=240),
     'ROTATE_REFRESH_TOKENS': False,
     'BLACKLIST_AFTER_ROTATION': True,
@@ -185,6 +185,7 @@ LOCALE_PATHS = (
 )
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
+THUMB_SIZE = 400, 400
 # Try to import django-heroku depending on Travis or Heroku
 try:
     # Configure Django App for Heroku.
