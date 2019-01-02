@@ -50,6 +50,8 @@ INSTALLED_APPS = [
     'src.users'
 
 ]
+CORS_ALLOW_HEADERS = ('content-disposition','cache-control','x-requested-with','accept-encoding',
+                      'content-type', 'accept', 'origin', 'authorization')
 CORS_ORIGIN_ALLOW_ALL = True
 
 MIDDLEWARE = [

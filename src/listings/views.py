@@ -85,7 +85,7 @@ class ListingPictures(RetrieveAPIView):
     """
     API endpoint that allows to get the Listing Gallery.
     """
-    # permission_classes = (IsAuthenticated,IsAdminUser,OnlyAPIPermission)
+    permission_classes = (IsAuthenticated,IsAdminUser,OnlyAPIPermission)
     queryset = Listing.objects.all()
     serializer_class = ListingPicturesSerializer
     lookup_field = 'pk'
