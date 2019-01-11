@@ -19,13 +19,24 @@ class PictureSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = PictureListing
-        fields = ('id','thumb', 'src', 'listing','thumbnail','normal','is_portrait')
+        fields = ('id','thumb', 'src', 'listing','normal','is_portrait')
         extra_kwargs = {
             'id': {'read_only':True},
             'thumbnail': {'read_only': True},
             'normal': {'write_only': True},
             'listing': {'write_only': True}
         }
+
+    def update(self, instance, validated_data):
+        if not instance.is_portrait:
+            actual_portrait = PictureListing.objects.get(is_portrait=True)
+            actual_portrait.is_portrait = False
+            actual_portrait.save()
+            instance.is_portrait = validated_data['is_portrait']
+            instance.save()
+
+        return instance
+
 
     @receiver(signals.pre_delete, sender=PictureListing)
     def auto_delete_pictures_on_delete(sender, instance, **kwargs):

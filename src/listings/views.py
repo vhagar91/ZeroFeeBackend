@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from rest_framework.generics import ListAPIView,RetrieveUpdateAPIView,CreateAPIView,UpdateAPIView,RetrieveAPIView
+from rest_framework.generics import ListAPIView,RetrieveUpdateAPIView,CreateAPIView,UpdateAPIView,RetrieveAPIView,DestroyAPIView
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from zeroAppBackend.permisions import OnlyAPIPermission
 from .models import Listing, PictureListing
@@ -102,6 +102,16 @@ class CreateListingPicture(CreateAPIView):
 
 
 class UpdateListingPicture(UpdateAPIView):
+    """
+    API endpoint that allows to Put a Listing Picture.
+    """
+    # permission_classes = (IsAuthenticated,IsAdminUser,OnlyAPIPermission)
+    queryset = PictureListing.objects.all()
+    serializer_class = PictureSerializer
+    lookup_field = 'pk'
+
+
+class DeleteListingPicture(DestroyAPIView):
     """
     API endpoint that allows to Put a Listing Picture.
     """

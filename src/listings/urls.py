@@ -13,4 +13,6 @@ urlpatterns = [
    url(r'^gallery/(?P<pk>\d+)/$', ListingPictures.as_view(serializer_class=ListingPicturesSerializer)),
    url(r'^add-picture/(?P<pk>\d+)/$', CreateListingPicture.as_view(serializer_class=PictureSerializer)),
    url(r'^update-picture/(?P<pk>\d+)/$', UpdateListingPicture.as_view(serializer_class=PictureSerializer)),
+   url(r'^delete-picture/(?P<pk>\d+)/$', DeleteListingPicture.as_view(serializer_class=PictureSerializer)),
+
 ]
