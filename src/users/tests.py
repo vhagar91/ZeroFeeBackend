@@ -32,11 +32,12 @@ class GetUsersTest(APITestCase):
 
 
     def test_get_users(self):
-        url = reverse('api-jwt-auth')
-        resp = self.client.post(url,{'username_or_email': 'clark', 'password': 'supersecret'}, format='json')
+        url = reverse("rest_login")
+        resp = self.client.post(url,{'email': 'joe@soap.com', 'password': 'supersecret'}, format='json')
+        print(resp)
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
         self.assertTrue('token' in resp.data)
-        token = resp.data['token']['access']
+        token = resp.data['token']
         # print(token)
 
         url = reverse("users-list")
