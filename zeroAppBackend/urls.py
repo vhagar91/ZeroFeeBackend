@@ -16,24 +16,21 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from django.conf.urls import url, include
-from rest_framework_simplejwt.views import (
-    TokenVerifyView,
-    TokenRefreshView,
-)
-from src.users.serializers import CustomJWTSerializer
-from src.users.views import ObtainJSONWebToken
+from src.users.views import FacebookLogin, GoogleLogin
 from rest_framework.documentation import include_docs_urls
 from django.conf import settings
 from django.conf.urls.static import static
-
+from rest_framework_jwt.views import refresh_jwt_token
 urlpatterns = [
     path('admin/', admin.site.urls),
     # Generate schema with valid `request` instance:
     url(r'^docs/', include_docs_urls(title='Zero Fee API', public=False)),
-    url(r'^api/login/$', ObtainJSONWebToken.as_view(serializer_class=CustomJWTSerializer),name='api-jwt-auth'),
+    url(r'^rest-auth/', include('rest_auth.urls')),
+    url(r'^rest-auth/registration/', include('rest_auth.registration.urls')),
+    url(r'^rest-auth/facebook/$', FacebookLogin.as_view(), name='fb_login'),
+    url(r'^rest-auth/google/$', GoogleLogin.as_view(), name='fb_login'),
+    url(r'^rest-auth/refresh/', refresh_jwt_token),
     # url(r'^api/token/$', TokenObtainPairView.as_view(), name='token_obtain_pair'),
-    url(r'^api/token/refresh/$', TokenRefreshView.as_view(), name='token_refresh'),
-    url(r'^api/token/verify/$', TokenVerifyView.as_view(), name='token_verify'),
     url(r'^api/', include('src.urls')),
 
 

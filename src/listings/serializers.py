@@ -2,7 +2,6 @@ from django.contrib.auth.models import User, Group
 from .models import Listing,Currency,Address,PictureListing,Price,Terms
 from django.db.models import signals
 from src.core.models import Picture
-from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from django.contrib.auth import authenticate
 from rest_framework import serializers
 from django.utils.translation import ugettext_lazy as _

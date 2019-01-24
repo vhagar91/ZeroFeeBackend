@@ -1,66 +1,30 @@
 from django.contrib.auth.models import User, Group
 from .models import *
 from src.core.models import Picture
-from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
-from django.contrib.auth import authenticate
+from rest_auth.serializers import JWTSerializer
 from rest_framework import serializers
-from django.utils.translation import ugettext_lazy as _
-from django.utils.six import text_type
 from django.dispatch import receiver
 from rest_framework.serializers import raise_errors_on_nested_writes
 from rest_framework.utils import model_meta
+from django.contrib.auth import get_user_model
 import os
+UserModel = get_user_model()
 
 
-class CustomJWTSerializer(TokenObtainPairSerializer):
-    username_field = 'username_or_email'
+class CustomUserDetailsSerializer(serializers.ModelSerializer):
+    """
+    User model w/o password
+    """
+    avatar = serializers.SerializerMethodField()
 
-    def validate(self, attrs):
+    class Meta:
+        model = UserModel
+        fields = ('id', 'username', 'email', 'first_name', 'last_name', 'avatar')
+        read_only_fields = ('email',)
 
-        password = attrs.get("password")
-        user_obj = User.objects.filter(email=attrs.get("username_or_email")).first() or User.objects.filter(username=attrs.get("username_or_email")).first()
-        if user_obj is not None:
-            credentials = {
-                'username':user_obj.username,
-                'password': password
-            }
-            if all(credentials.values()):
-                user = authenticate(**credentials)
-                if user:
-                    if not user.is_active:
-                        msg = _('User account is disabled.')
-                        raise serializers.ValidationError(msg)
-
-                    data = {}
-                    token = {}
-                    userData = {}
-                    refresh = self.get_token(user)
-                    profile = UserProfile.objects.get(user=user_obj);
-
-                    token['refresh'] = text_type(refresh)
-                    token['access'] = text_type(refresh.access_token)
-                    userData['name'] = user_obj.username
-                    userData['email'] = user_obj.email
-                    userData['id'] = user_obj.id
-                    userData['avatar'] = self.get_photo_url(profile);
-                    data['token']=token
-                    data['user']=userData
-                    return data
-                else:
-                    msg = _('Unable to log in with provided credentials.')
-                    raise serializers.ValidationError(msg)
-
-            else:
-                msg = _('Must include "{username_field}" and "password".')
-                msg = msg.format(username_field=self.username_field)
-                raise serializers.ValidationError(msg)
-
-        else:
-            msg = _('Account with this email/username does not exists')
-            raise serializers.ValidationError(msg)
-
-    def get_photo_url(self, profile):
+    def get_avatar(self, user):
         request = self.context.get('request')
+        profile = UserProfile.objects.get(user=user);
         if profile.picture:
             photo_url = profile.picture.thumbnail.url
             return request.build_absolute_uri(photo_url)
