@@ -148,3 +148,8 @@ class PictureListing(models.Model):
         temp_thumb.close()
 
         return True
+
+
+class Amenities (models.Model):
+    name = models.CharField(max_length=50)
+    listing = models.ForeignKey(Listing, related_name='amenities', on_delete=models.CASCADE)
