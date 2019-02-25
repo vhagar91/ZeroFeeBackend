@@ -12,7 +12,11 @@ from django_filters.rest_framework import DjangoFilterBackend
 from allauth.socialaccount.providers.facebook.views import FacebookOAuth2Adapter
 from allauth.socialaccount.providers.google.views import GoogleOAuth2Adapter
 from rest_auth.registration.views import SocialLoginView
+from rest_auth.registration.views import LoginView
+from rest_framework.authentication import TokenAuthentication
 
+class LoginViewCustom(LoginView):
+    authentication_classes = (TokenAuthentication,)
 
 class FacebookLogin(SocialLoginView):
 
